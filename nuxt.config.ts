@@ -17,6 +17,12 @@ export default defineNuxtConfig({
       charset: "utf-8",
       viewport:
         "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
+      link: [
+        { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+        { rel: "icon", type: "image/png", sizes: "64x64", href: "/favicon/64.png" },
+        { rel: "icon", type: "image/png", sizes: "192x192", href: "/favicon/192.png" },
+        { rel: "apple-touch-icon", sizes: "192x192", href: "/favicon/192.png" },
+      ],
       meta: [
         { name: "robots", content: "index, follow" },
         { name: "title", content: title },

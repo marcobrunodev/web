@@ -110,12 +110,12 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
           v-if="!forceVeto && !stageBracketOverride"
         >
           <FormItem
-            class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
+            class="group flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
             :class="{ 'cursor-not-allowed opacity-60': isLocked }"
             @click="!isLocked && handleChange(!value)"
           >
             <div class="flex justify-between items-center">
-              <FormLabel class="text-lg font-semibold">{{
+              <FormLabel class="text-lg font-semibold group-hover:text-accent-foreground">{{
                 $t("match.options.map_veto_settings.label")
               }}</FormLabel>
               <FormControl>
@@ -127,7 +127,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 />
               </FormControl>
             </div>
-            <FormDescription>
+            <FormDescription class="group-hover:text-accent-foreground">
               {{ $t("match.options.map_veto_settings.description") }}
             </FormDescription>
           </FormItem>

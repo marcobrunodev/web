@@ -45,21 +45,21 @@ import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
   <template v-else>
     <Button
       @click="createLobby"
-      class="relative group overflow-hidden rounded bg-transparent text-white shadow-lg hover:shadow px-5 py-5 transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
+      class="relative group overflow-hidden rounded bg-transparent text-zinc-900 shadow-lg hover:shadow px-5 py-5 transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500"
     >
       <span
-        class="absolute inset-0 rounded p-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
+        class="absolute inset-0 rounded p-[2px] bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-500"
       >
         <span class="block h-full w-full bg-zinc-900/90"></span>
       </span>
 
       <span
-        class="pointer-events-none absolute inset-0 rounded bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 ease-out"
+        class="pointer-events-none absolute inset-0 rounded bg-gradient-to-r from-yellow-400/20 via-yellow-500/20 to-amber-500/20 opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 ease-out"
       ></span>
 
       <div class="relative flex items-center gap-2 z-10">
-        <Merge class="h-5 w-5 drop-shadow-sm" />
-        <span class="font-semibold">Create Lobby</span>
+        <Merge class="h-5 w-5 drop-shadow-sm text-yellow-400" />
+        <span class="font-semibold text-yellow-400">Create Lobby</span>
       </div>
     </Button>
   </template>

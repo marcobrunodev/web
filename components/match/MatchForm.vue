@@ -10,11 +10,11 @@ import { Info } from "lucide-vue-next";
       <template #left>
         <FormField v-if="!match" v-slot="{ value, handleChange }" name="pug">
           <FormItem
-            class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
+            class="group flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
             @click="handleChange(!value)"
           >
             <div class="flex justify-between items-center">
-              <FormLabel class="text-lg font-semibold">{{
+              <FormLabel class="text-lg font-semibold group-hover:text-accent-foreground">{{
                 $t("pages.matches.create_page.pick_up_game")
               }}</FormLabel>
               <FormControl>
@@ -25,7 +25,7 @@ import { Info } from "lucide-vue-next";
                 />
               </FormControl>
             </div>
-            <FormDescription>
+            <FormDescription class="group-hover:text-accent-foreground">
               {{ $t("pages.matches.create_page.pick_up_game_description") }}
             </FormDescription>
           </FormItem>
