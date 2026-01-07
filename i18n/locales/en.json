@@ -662,6 +662,7 @@
             }
         },
         "top_nav": {
+            "brand": "Banana Server",
             "home": "My Stats",
             "play_menu": "Play",
             "community_menu": "Community",

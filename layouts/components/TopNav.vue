@@ -49,9 +49,9 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
         v-if="!isMobile"
       >
         <NuxtImg class="rounded h-6 w-6" src="/favicon/64.png" />
-        <span class="font-extrabold text-base tracking-widest text-[#f5c6a5]"
-          >5Stack</span
-        >
+        <span class="font-extrabold text-base tracking-widest text-[#f5c6a5]">
+          {{ $t("layouts.top_nav.brand") }}
+        </span>
       </NuxtLink>
       <SystemStatus v-if="!isMobile" />
       <!-- Unified Play and Community menus for all screen sizes -->
