@@ -16,6 +16,7 @@
             "timestamps": "Timestamps"
         },
         "login": {
+            "brand": "Banana Server",
             "sign_in": "Sign in with Steam",
             "powered_by": "Powered by"
         },
