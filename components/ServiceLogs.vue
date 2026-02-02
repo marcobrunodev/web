@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import socket from "~/web-sockets/Socket";
 import { Card, CardHeader, CardContent } from "~/components/ui/card";
-import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 import {
@@ -10,23 +9,62 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 
 import { DownloadIcon, FullscreenIcon, ExpandIcon } from "lucide-vue-next";
-import Convert from "ansi-to-html";
+
+const config = useRuntimeConfig();
+
+async function downloadFullLogs(service: string) {
+  try {
+    const response = await fetch(
+      `https://${config.public.apiDomain}/system/logs/download?service=${service}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ service }),
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to download logs");
+    }
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+
+    const contentDisposition = response.headers.get("Content-Disposition");
+    let filename = `${service}-logs.zip`;
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+      if (filenameMatch) {
+        filename = filenameMatch[1];
+      }
+    }
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading full logs", error);
+  }
+}
 </script>
 
 <template>
   <Card>
     <CardHeader class="flex flex-col gap-2">
       <div class="flex items-center justify-between gap-4">
-        <div
-          v-if="oldestTimestamp"
-          class="text-xs font-mono text-muted-foreground"
-        >
-          Displaying logs from
-          {{ new Date(oldestTimestamp).toLocaleString() }}
-        </div>
-
         <div class="flex items-center gap-4">
           <Button variant="outline" @click="jumpToLive">
             {{ $t("ui.logs.jump_to_live") }}
@@ -75,17 +113,26 @@ import Convert from "ansi-to-html";
             {{ $t("ui.logs.timestamps") }}
           </div>
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <DownloadIcon
-                  @click="downloadLogs"
-                  class="h-5 w-5 cursor-pointer text-muted-foreground hover:text-foreground"
-                />
-              </TooltipTrigger>
-              <TooltipContent>{{ $t("ui.tooltips.download") }}</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <button
+                class="h-5 w-5 cursor-pointer text-muted-foreground hover:text-foreground flex items-center justify-center"
+              >
+                <DownloadIcon class="h-5 w-5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem @click="downloadLogs" class="cursor-pointer">
+                Download visible logs
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                @click="downloadFullLogs(service)"
+                class="cursor-pointer"
+              >
+                Download full logs
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -100,49 +147,35 @@ import Convert from "ansi-to-html";
     </CardHeader>
 
     <CardContent class="p-4">
-      <!-- Multi-pod -->
       <Tabs v-if="podCount > 1" v-model="activePod">
         <TabsContent v-for="pod in podList" :key="pod" :value="pod">
-          <div class="overflow-auto whitespace-nowrap max-h-[50vh]">
-            <div
-              v-for="(entry, index) in logsByPod[pod]"
-              :key="index"
-              class="text-xs font-mono py-1 flex gap-4"
-            >
-              <span
-                v-if="(timestamps === undefined && _timestamps) || timestamps"
-                class="text-muted-foreground"
-              >
-                {{ entry.timestamp }}
-              </span>
-              <span v-html="colorize(entry.log)" />
-            </div>
-          </div>
+          <PodLogs
+            :pod="pod"
+            :logs="logsByPod[pod] || []"
+            :show-timestamps="effectiveTimestamps"
+            :follow="effectiveFollowLogs"
+            @follow-logs-changed="handleFollowLogsChanged"
+            @load-more-logs="handleLoadMoreLogs"
+          />
         </TabsContent>
       </Tabs>
 
       <!-- Single pod -->
-      <div v-else class="overflow-auto whitespace-nowrap max-h-[50vh]">
-        <div
-          v-for="(entry, index) in logsByPod[activePod] || []"
-          :key="index"
-          class="text-xs font-mono py-1 flex gap-4"
-        >
-          <span
-            v-if="(timestamps === undefined && _timestamps) || timestamps"
-            class="text-muted-foreground"
-          >
-            {{ entry.timestamp }}
-          </span>
-          <span v-html="colorize(entry.log)" />
-        </div>
-      </div>
+      <PodLogs
+        v-else
+        :pod="activePod"
+        :logs="logsByPod[activePod] || []"
+        :show-timestamps="effectiveTimestamps"
+        :follow="effectiveFollowLogs"
+        @follow-logs-changed="handleFollowLogsChanged"
+        @load-more-logs="handleLoadMoreLogs"
+      />
     </CardContent>
   </Card>
 </template>
 
 <script lang="ts">
-const convert = new Convert();
+import PodLogs from "~/components/PodLogs.vue";
 
 type LogEntry = {
   log: string;
@@ -163,8 +196,8 @@ export default {
   data() {
     return {
       logsByPod: {} as Record<string, LogEntry[]>,
+      gettingSinceLogs: false,
       activePod: "",
-      oldestTimestamp: undefined as string | undefined,
       _timestamps: true,
       _followLogs: true,
       expanded: false,
@@ -180,15 +213,16 @@ export default {
     podCount(): number {
       return this.podList.length;
     },
+    effectiveFollowLogs(): boolean {
+      return this.followLogs === undefined ? this._followLogs : this.followLogs;
+    },
+    effectiveTimestamps(): boolean {
+      return this.timestamps === undefined ? this._timestamps : this.timestamps;
+    },
   },
 
   methods: {
-    colorize(log: string) {
-      return convert.toHtml(log);
-    },
-
     jumpToLive() {
-      this._followLogs = true;
       this.$emit("follow-logs-changed", true);
     },
 
@@ -210,6 +244,27 @@ export default {
       a.click();
       URL.revokeObjectURL(url);
     },
+
+    handleLoadMoreLogs({ pod, oldestLogTime }) {
+      this.gettingSinceLogs = true;
+
+      const start = new Date(oldestLogTime);
+      start.setMinutes(start.getMinutes() - 60);
+
+      socket.event("logs", {
+        service: this.service,
+        since: {
+          start: start.toISOString(),
+          until: oldestLogTime.toISOString(),
+        },
+      });
+    },
+    handleFollowLogsChanged(value: boolean) {
+      if (this.followLogs === undefined) {
+        this._followLogs = value;
+      }
+      this.$emit("follow-logs-changed", value);
+    },
   },
 
   watch: {
@@ -218,18 +273,45 @@ export default {
       handler() {
         this.logsByPod = {};
         this.activePod = "";
+        let partial: Record<string, any[]> = {};
 
         this.logListener?.stop();
 
         this.logListener = socket.listen(`logs:${this.service}`, (raw) => {
           const log = JSON.parse(raw);
 
-          if (log.oldest_timestamp) {
-            this.oldestTimestamp = log.oldest_timestamp;
+          if (log.end) {
+            if (log.job_finshed !== true && log.partial !== true) {
+              this.retryTimeout = setTimeout(() => {
+                socket.event("logs", {
+                  tailLines: 250,
+                  service: this.service,
+                });
+              }, 5000);
+            }
+
+            if (log.partial) {
+              this.gettingSinceLogs = false;
+              for (const pod in partial) {
+                this.logsByPod[pod].unshift(...partial[pod]);
+                delete partial[pod];
+              }
+              return;
+            }
+          }
+
+          if (!log.log) {
             return;
           }
 
-          if (!log.log) return;
+          if (this.gettingSinceLogs) {
+            if (!partial[log.pod]) {
+              partial[log.pod] = [];
+            }
+
+            partial[log.pod].push(log);
+            return;
+          }
 
           const pod = log.pod ?? "default";
 

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(git show:*)",
+      "Bash(grep:*)",
+      "Read(*)",
+      "Search(*)",
+      "Edit(*)",
+      "Write(*)",
+      "Bash(npx vue-tsc:*)",
+      "Bash(timeout 15 npm run dev:*)",
+      "Bash(find:*)"
+    ]
+  }
+}

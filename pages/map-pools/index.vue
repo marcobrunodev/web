@@ -16,113 +16,141 @@ import MapForm from "~/components/map-pools/MapForm.vue";
 import MapPoolRow from "~/components/map-pools/MapPoolRow.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table";
 
 const { isMobile } = useSidebar();
 </script>
 
 <template>
-  <div class="flex-grow flex flex-col gap-4">
-    <PageHeading>
-      <template #title>{{ $t("pages.map_pools.title") }}</template>
+  <div class="flex-grow flex flex-col gap-6">
+    <PageTransition :delay="0">
+      <PageHeading>
+        <template #title>{{ $t("pages.map_pools.title") }}</template>
 
-      <template #description>
-        {{ $t("pages.map_pools.description") }}
-      </template>
+        <template #description>
+          {{ $t("pages.map_pools.description") }}
+        </template>
 
-      <template #actions>
-        <div class="flex flex-col items-center gap-4 md:flex-row">
-          <FiveStackToolTip>
-            <template #trigger>
-              <div
-                class="flex items-center gap-2"
-                @click="toggleUpdateMapPools"
-              >
-                <div class="flex items-center gap-1">
-                  <Info :size="14" />
-                  {{ $t("pages.settings.application.update_map_pools.title") }}
+        <template #actions>
+          <div class="flex flex-col items-center gap-4 md:flex-row">
+            <FiveStackToolTip>
+              <template #trigger>
+                <div
+                  class="flex items-center gap-2"
+                  @click="toggleUpdateMapPools"
+                >
+                  <div class="flex items-center gap-1">
+                    <Info :size="14" />
+                    {{
+                      $t("pages.settings.application.update_map_pools.title")
+                    }}
+                  </div>
+                  <Switch
+                    :model-value="updateMapPools"
+                    @update:model-value="toggleUpdateMapPools"
+                  />
                 </div>
-                <Switch
-                  :model-value="updateMapPools"
-                  @update:model-value="toggleUpdateMapPools"
-                />
-              </div>
-            </template>
-            {{ $t("pages.settings.application.update_map_pools.description") }}
-          </FiveStackToolTip>
+              </template>
+              {{
+                $t("pages.settings.application.update_map_pools.description")
+              }}
+            </FiveStackToolTip>
 
-          <Button
-            @click="mapFormSheet = true"
-            :size="isMobile ? 'default' : 'lg'"
-          >
-            <PlusCircle class="w-4 h-4" />
-            <span class="hidden md:inline ml-2">{{
-              $t("pages.map_pools.add_new_map")
-            }}</span>
-          </Button>
-        </div>
-      </template>
-    </PageHeading>
+            <Button
+              @click="mapFormSheet = true"
+              :size="isMobile ? 'default' : 'lg'"
+            >
+              <PlusCircle class="w-4 h-4" />
+              <span class="hidden md:inline ml-2">{{
+                $t("pages.map_pools.add_new_map")
+              }}</span>
+            </Button>
+          </div>
+        </template>
+      </PageHeading>
+    </PageTransition>
 
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <div
-        v-for="pool in map_pools"
-        :key="pool.id"
-        class="relative p-4 bg-background rounded-lg shadow-md"
-      >
-        <h2 class="text-lg font-semibold">{{ pool.type }} Pool</h2>
-        {{ pool.maps.map((map) => map.name).join(", ") }}
-        <NuxtLink
-          :to="{ name: 'map-pools-id', params: { id: pool.id } }"
-          class="absolute top-4 right-4 text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded shadow"
+    <PageTransition :delay="100">
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <AnimatedCard
+          v-for="pool in map_pools"
+          :key="pool.id"
+          variant="gradient"
+          class="relative p-4"
         >
-          {{ $t("pages.map_pools.edit") }}
-        </NuxtLink>
+          <div class="flex items-start justify-between">
+            <div>
+              <h2 class="text-lg font-semibold">{{ pool.type }} Pool</h2>
+              <p class="text-sm text-muted-foreground mt-1">
+                {{ pool.maps.map((map) => map.name).join(", ") }}
+              </p>
+            </div>
+            <Button variant="secondary" size="sm" as-child>
+              <NuxtLink :to="{ name: 'map-pools-id', params: { id: pool.id } }">
+                {{ $t("pages.map_pools.edit") }}
+              </NuxtLink>
+            </Button>
+          </div>
+        </AnimatedCard>
       </div>
-    </div>
+    </PageTransition>
 
     <Separator />
 
-    <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-bold">
-        {{ $t("pages.map_pools.maps") }}
-      </h2>
-      <div class="relative w-full max-w-sm">
-        <Input
-          v-model="searchQuery"
-          type="text"
-          :placeholder="$t('pages.map_pools.search')"
-          class="pl-10"
-        />
-        <Search
-          class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
-        />
+    <PageTransition :delay="200">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-bold">
+          {{ $t("pages.map_pools.maps") }}
+        </h2>
+        <div class="relative w-full max-w-sm">
+          <Input
+            v-model="searchQuery"
+            type="text"
+            :placeholder="$t('pages.map_pools.search')"
+            class="pl-10"
+          />
+          <Search
+            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
+          />
+        </div>
       </div>
-    </div>
-    <table class="min-w-full bg-background rounded-lg shadow-md">
-      <thead>
-        <tr>
-          <th class="px-4 py-2 text-left text-sm font-medium"></th>
-          <th class="px-4 py-2 text-left text-sm font-medium">
-            {{ $t("pages.map_pools.active_duty") }}
-          </th>
-          <th class="px-4 py-2 text-left text-sm font-medium">
-            {{ $t("pages.map_pools.available_modes") }}
-          </th>
-          <th class="px-4 py-2 text-left text-sm font-medium">
-            {{ $t("pages.map_pools.workshop_id") }}
-          </th>
-          <th class="px-4 py-2 text-left text-sm font-medium"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <MapPoolRow
-          v-for="map in availableMaps"
-          :key="map.id"
-          :map="map"
-          :match-types="matchTypes"
-        />
-      </tbody>
-    </table>
+    </PageTransition>
+
+    <PageTransition :delay="300">
+      <AnimatedCard variant="gradient" class="p-4">
+        <div class="relative w-full overflow-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead class="w-[350px]"></TableHead>
+                <TableHead>{{ $t("pages.map_pools.active_duty") }}</TableHead>
+                <TableHead>{{
+                  $t("pages.map_pools.available_modes")
+                }}</TableHead>
+                <TableHead>{{ $t("pages.map_pools.workshop_id") }}</TableHead>
+                <TableHead class="w-[50px]"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <MapPoolRow
+                v-for="map in availableMaps"
+                :key="map.id"
+                :map="map"
+                :match-types="matchTypes"
+              />
+            </TableBody>
+          </Table>
+        </div>
+      </AnimatedCard>
+    </PageTransition>
   </div>
 
   <Sheet :open="mapFormSheet" @update:open="(open) => (mapFormSheet = open)">
@@ -143,7 +171,7 @@ import { e_map_pool_types_enum, e_match_types_enum } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
 import { settings_constraint, settings_update_column } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
-
+import { order_by } from "~/generated/zeus";
 interface Map {
   id: string;
   name: string;
@@ -214,10 +242,16 @@ export default {
               type: {
                 _neq: e_map_pool_types_enum.Custom,
               },
+              enabled: {
+                _eq: true,
+              },
             },
-            order_by: {
-              type: "asc",
-            },
+            order_by: [
+              {},
+              {
+                type: order_by.asc,
+              },
+            ],
           },
           {
             id: true,
