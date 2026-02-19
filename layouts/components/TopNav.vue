@@ -17,7 +17,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import InstallPWA from "~/components/InstallPWA.vue";
-import { DiscordLogoIcon } from "@radix-icons/vue";
 import { Settings, LogOut, ChevronsUpDown } from "lucide-vue-next";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -233,30 +232,6 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                     <li>
                       <NavigationMenuLink as-child>
                         <a
-                          :href="inviteLink"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          class="flex flex-col px-2 py-2 rounded hover:text-green-300 transition-colors"
-                        >
-                          <span class="block font-bold flex items-center gap-2">
-                            {{
-                              $t(
-                                "layouts.top_nav.community.social.join_discord.title",
-                              )
-                            }}
-                            <DiscordLogoIcon class="w-4 h-4" />
-                          </span>
-                          <span class="block text-xs text-neutral-400">{{
-                            $t(
-                              "layouts.top_nav.community.social.join_discord.subtitle",
-                            )
-                          }}</span>
-                        </a>
-                      </NavigationMenuLink>
-                    </li>
-                    <li>
-                      <NavigationMenuLink as-child>
-                        <a
                           href="https://github.com/5stackgg/5stack-panel"
                           target="_blank"
                           rel="noopener noreferrer"
@@ -388,9 +363,6 @@ export default {
     };
   },
   computed: {
-    inviteLink() {
-      return `https://${useRuntimeConfig().public.webDomain}/discord-invite`;
-    },
     me() {
       return useAuthStore().me;
     },

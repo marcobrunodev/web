@@ -21,7 +21,7 @@ import {
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
-import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
+import { GithubLogoIcon } from "@radix-icons/vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { Kbd, KbdGroup } from "~/components/ui/kbd";
 import Logout from "./Logout.vue";
@@ -503,23 +503,6 @@ import Logout from "./Logout.vue";
           </SidebarMenuButton>
         </SidebarMenuItem>
 
-        <SidebarMenuItem>
-          <SidebarMenuButton
-            as-child
-            :tooltip="$t('layouts.app_nav.tooltips.join_discord')"
-          >
-            <a
-              :href="inviteLink"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <DiscordLogoIcon class="w-5 h-5" />
-              {{ $t("layouts.app_nav.footer.join_discord") }}
-            </a>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-
         <InstallPWA />
 
         <SidebarMenuItem>
@@ -668,10 +651,6 @@ export default {
     },
     isAdmin() {
       return useAuthStore().isAdmin;
-    },
-    // TODO - move to global
-    inviteLink() {
-      return `https://${useRuntimeConfig().public.webDomain}/discord-invite`;
     },
     managingMatchesCount() {
       return useMatchLobbyStore().managingMatchesCount;
