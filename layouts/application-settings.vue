@@ -45,6 +45,11 @@ import Default from "~/layouts/default.vue";
               {{ $t("pages.settings.application.demo_settings.title") }}
             </Button>
           </nuxt-link>
+          <nuxt-link to="/settings/application/clips">
+            <Button variant="ghost" class="w-full text-left justify-start">
+              {{ $t("pages.settings.application.clips.title") }}
+            </Button>
+          </nuxt-link>
           <nuxt-link to="/settings/application/servers">
             <Button variant="ghost" class="w-full text-left justify-start">
               {{ $t("pages.settings.application.servers.title") }}

@@ -241,6 +241,28 @@
                     "demo_network_limiter_description": "The global network limiter for the demo files.",
                     "updated_s3_settings": "Updated S3 Settings"
                 },
+                "clips": {
+                    "title": "Clips (Allstar)",
+                    "description": "Configure a geração automática de clips de highlights usando a API do Allstar.",
+                    "allstar_dashboard": "Abrir Dashboard do Allstar",
+                    "enable_clips": "Habilitar Clips Automáticos",
+                    "enable_clips_description": "Quando habilitado, highlights serão gerados automaticamente quando as partidas terminarem.",
+                    "api_key": "Chave da API Allstar",
+                    "api_key_description": "Sua chave secreta da API do painel de desenvolvedores do Allstar.",
+                    "webhook_url": "URL do Webhook",
+                    "webhook_url_description": "A URL onde o Allstar enviará atualizações de status dos clips. Geralmente seu domínio + /clips/webhook/allstar",
+                    "webhook_auth": "String de Autenticação do Webhook",
+                    "webhook_auth_description": "String de autenticação opcional que o Allstar enviará no header Authorization.",
+                    "update": "Salvar Configurações",
+                    "updated": "Configurações de clips atualizadas",
+                    "clips_enabled_toast": "Clips habilitados",
+                    "clips_disabled": "Clips desabilitados",
+                    "how_it_works": "Como funciona",
+                    "how_it_works_1": "Quando uma partida termina, a demo é enviada ao Allstar para processamento",
+                    "how_it_works_2": "O Allstar analisa a demo e gera clips de Play of the Game",
+                    "how_it_works_3": "Clips de Best Play são gerados para cada jogador da partida",
+                    "how_it_works_4": "Os clips são salvos no banco de dados e podem ser vistos nas páginas das partidas"
+                },
                 "update_map_pools": {
                     "title": "Atualizar automaticamente os conjuntos de mapas",
                     "description": "Adicionar / atualizar automaticamente conjuntos de mapas quando novos mapas são adicionados ou removidos do conjunto de tarefas ativa."

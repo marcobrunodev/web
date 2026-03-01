@@ -243,6 +243,28 @@
                     "demo_network_limiter_description": "The global network limiter for the demo files.",
                     "updated_s3_settings": "Updated S3 Settings"
                 },
+                "clips": {
+                    "title": "Clips (Allstar)",
+                    "description": "Configure automatic highlight clip generation using Allstar API.",
+                    "allstar_dashboard": "Open Allstar Dashboard",
+                    "enable_clips": "Enable Automatic Clips",
+                    "enable_clips_description": "When enabled, highlights will be automatically generated when matches finish.",
+                    "api_key": "Allstar API Key",
+                    "api_key_description": "Your secret API key from the Allstar developer dashboard.",
+                    "webhook_url": "Webhook URL",
+                    "webhook_url_description": "The URL where Allstar will send clip status updates. Usually your domain + /clips/webhook/allstar",
+                    "webhook_auth": "Webhook Auth String",
+                    "webhook_auth_description": "Optional authentication string that Allstar will send in the Authorization header.",
+                    "update": "Save Settings",
+                    "updated": "Clip settings updated",
+                    "clips_enabled_toast": "Clips enabled",
+                    "clips_disabled": "Clips disabled",
+                    "how_it_works": "How it works",
+                    "how_it_works_1": "When a match finishes, the demo is sent to Allstar for processing",
+                    "how_it_works_2": "Allstar analyzes the demo and generates Play of the Game clips",
+                    "how_it_works_3": "Best Play clips are generated for each player in the match",
+                    "how_it_works_4": "Clips are saved to the database and can be viewed on match pages"
+                },
                 "update_map_pools": {
                     "title": "Automatic Update Map Pools",
                     "description": "Automatically add / update map pools when new maps are added or removed from the active duty pool."
